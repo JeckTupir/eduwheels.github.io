@@ -1,57 +1,45 @@
-# **IT342-BCD**
+# **IT342-BCD: EduWheels** 🚗
 
 ## **System Name:**
-**EduWheels**
+**EduWheels** 🚙
 
 ## **System Description:**
-**EduWheels** is a comprehensive **School Vehicle Management System** designed to provide a systematic and efficient way of managing school vehicles. It includes optimized features that assist in vehicle management, such as a **Vehicle Database**, **Booking & Reservation**, and a **Recommendation feature**.
+**EduWheels** is a comprehensive **School Vehicle Management System** designed to provide a systematic and efficient way of managing school vehicles. It includes optimized features that assist in vehicle management, such as:
+- **Vehicle Database** 📚
+- **Booking & Reservation** 📅
+- **Recommendation Feature** 💡
 
-## **List of Features: **
-tba
+## **List of Features:**
+_TBA_ 🔜
 
 ## **Links:**
-**Figma**:
-**Ghant Chart**:
+- **Figma Design**: [EduWheels Figma Design](https://www.figma.com/design/6hVP8vmtOIeV62I0KdMk2g/EduWheels-IT342?node-id=0-1&t=IFjnpyPHnNvj4E1M-1) 🎨
+- **Gantt Chart**: _TBA_ 🗓️
 
+---
 
 ## **Team Members:**
 
-### **Member 3:**
-- **Name**: Dela Torre, Jestopher B.
-- **Course & Section**: BSIT - 3
-
+### **Member 3: Dela Torre, Jestopher B.** 👤
+- **Course & Section**: BSIT - 3 🎓
 
 **Short Description:**
-Hi, I'm Jestopher B. Dela Torre, 22 years old, from San Carlos, Negros Occidental, currently residing in Cebu City, Mambaling. I enjoy playing video games and sports, especially soccer. I'm a chill and approachable guy (though quite short!) and love outdoor activities, though not every day. I'm also a fan of good food. I’m curious and a perfectionist at times.
+Hello! I am **Jestopher B. Dela Torre**, 22 years old, from **San Carlos, Negros Occidental**, and currently residing in **Cebu City, Mambaling**. I love playing **video games** 🎮 and engaging in **sports**, especially **soccer** ⚽. I’m a **chill** and **approachable** guy (though quite short!). Outdoor activities 🌳 are a favorite of mine, but not every day. Also, I’m passionate about **good food** 🍔 and have a curious, sometimes perfectionist nature. 🔍
 
-I am Jestopher B. Dela Torre 22 years old and I am from San Carlos Negros Occidental currently residing in Cebu City Mambaling. My hobbies are playing video games and playing sports especially soccer. I am a chill and approachable guy but very short. I love doing outdoor activities but not everyday and I love good food. I am curious and perfectionist at times. 
+---
 
-### Short Description
-
-I am Jestopher B. Dela Torre 22 years old and I am from San Carlos Negros Occidental currently residing in Cebu City Mambaling. My hobbies are playing video games and playing sports especially soccer. I am a chill and approachable guy but very short. I love doing outdoor activities but not everyday and I love good food. I am curious and perfectionist at times. 
-
-
-### **Member 2:**
-- **Name**: XYRILL DERECK N. CAÑETE
-- **Course & Year**: BSIT - 3
-
-### Short Description 
-
-I am a student at CIT-U. Currently living in Tungkil, Minglanilla, Cebu. I am the eldest among my siblings. I am 21 years old. I like buldak noodles.
-The current song that I like is blue - yung kai, please listen
-
+### **Member 2: XYRILL DERECK N. CAÑETE** 🎤
+- **Course & Year**: BSIT - 3 🎓
 
 **Short Description:**
-Hello! I am XYRILL DERECK N. CAÑETE, a student at CIT-U, currently living in Tungkil, Minglanilla, Cebu. I am the eldest among my siblings and 21 years old. I enjoy eating buldak noodles and have a particular fondness for music. One song that I’ve been listening to recently is "Blue" by Yung Kai. I highly recommend you check it out!
+Hey there! I'm **XYRILL DERECK N. CAÑETE**, a **21-year-old** student at **CIT-U**, currently living in **Tungkil, Minglanilla, Cebu**. As the eldest among my siblings 👨‍👩‍👧‍👦, I enjoy eating **buldak noodles** 🍜 and exploring **new music** 🎶. One song that’s been on repeat lately is "**Blue**" by **Yung Kai** 🎧—definitely give it a listen if you haven’t! 🎵
 
+---
 
-### **Member 1:**
-- **Name**: Baricuatro, Karl T.
-- **Course & Section**: BSIT - 3
+### **Member 1: Baricuatro, Karl T.** 👨‍💻
+- **Course & Section**: BSIT - 3 🎓
 
 **Short Description:**
-I’m Karl Baricuatro, but you can call me Karu! I’m from Dumlog, Talisay City, Cebu, but originally from Bagawines, Vallehermoso, Negros Oriental. In my free time, I enjoy playing games, listening to music (especially classical and RnB), and savoring delicious foods.
+I’m **Karl Baricuatro**, but you can call me **Karu**! Originally from **Bagawines, Vallehermoso, Negros Oriental**, I’m now based in **Dumlog, Talisay City, Cebu**. I love playing **games** 🎮, listening to **classical** 🎻 and **RnB music** 🎤, and savoring **savory foods** 🍲. I find joy in music 🎶 and food 🍽️, and I’m always up for a fun time with friends 👯.
 
-
-I am Karl Baricuatro, you can also call me Karu. I'm from Dumlog, Talisay City, Cebu. But I originated from Bagawines, Vallehermoso, Negros Oriental. I like to play games, listen to music, especially to classicals and RnB. And I like to eat savory foods.
-
+---
