@@ -7,6 +7,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -15,13 +16,15 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
-                                "/webjars/**"
-                        ).permitAll() // Allow Swagger UI access
-                        .anyRequest().permitAll() // Allow all other requests
+                                "/webjars/**",
+                                "/", "/login**", "/error"
+                        ).permitAll() // Allow Swagger + home/login/error
+                        .anyRequest().authenticated() // Protect all other endpoints
                 )
-                .csrf().disable()   // Disable CSRF
-                .formLogin().disable() // Disable login page
-                .httpBasic().disable(); // Disable basic authentication
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .oauth2Login(); // Enable OAuth2 login
 
         return http.build();
     }

@@ -8,7 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "tblUsers")
-public class userEntity {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +23,9 @@ public class userEntity {
     private String email;
     private String password;
 
-    public userEntity() {}
+    public UserEntity() {}
 
-    public userEntity(String schoolid, String firstName, String lastName, String username, String email, String password) {
+    public UserEntity(String schoolid, String firstName, String lastName, String username, String email, String password) {
         this.schoolid = schoolid;
         this.firstName = firstName;
         this.lastName = lastName;
