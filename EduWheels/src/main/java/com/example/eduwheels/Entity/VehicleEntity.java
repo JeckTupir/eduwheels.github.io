@@ -9,7 +9,7 @@ public class VehicleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long vehicleId;
-
+    
     @Column(name = "plate_number", nullable = false, unique = true)
     private String plateNumber;
 
