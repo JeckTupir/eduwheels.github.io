@@ -1,4 +1,4 @@
-package com.example.eduwheels.config;
+package com.example.eduwheels.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
