@@ -14,18 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "http://localhost:5173")
-class UserController {
-
-    @Autowired
-    private UserService userService;  // Fixed casing for 'userService'000
-
-    @GetMapping
-    public List<UserEntity> getAllUsers() {
-        return userService.getAllUsers();
-
-@RestController
-@RequestMapping("/users")
 class UserController {
     @Autowired
     private UserService UserService;
@@ -37,7 +25,6 @@ class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
         return UserService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -48,13 +35,13 @@ class UserController {
     public ResponseEntity<UserEntity> signUp(@RequestBody UserEntity user) {
         try {
             // Check if user already exists
-            if (userService.userExists(user.getEmail())) {
+            if (UserService.userExists(user.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(null);  // Return bad request if email exists
             }
 
             // Create the user
-            UserEntity createdUser = userService.createUser(user);
+            UserEntity createdUser = UserService.createUser(user);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (Exception e) {
@@ -63,9 +50,6 @@ class UserController {
         }
     }
 
-    @PostMapping
-    public UserEntity createUser(@RequestBody UserEntity user) {
-        return userService.createUser(user);
       
     @PostMapping
     public UserEntity createUser(@RequestBody UserEntity user) {
@@ -76,11 +60,8 @@ class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
-}
         UserService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }
+
