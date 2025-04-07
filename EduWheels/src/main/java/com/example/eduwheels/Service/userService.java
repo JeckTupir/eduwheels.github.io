@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public UserEntity createUser(UserEntity user) {
-        // You can include additional validation or transformation here if needed
+
         return userRepository.save(user);
     }
 
@@ -37,4 +37,6 @@ public class UserService {
     }
 
     // Optionally, you could add more methods such as updating a user, etc.
+}
+
 }

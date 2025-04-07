@@ -10,11 +10,19 @@
 - **Recommendation Feature** 💡
 
 ## **List of Features:**
-_TBA_ 🔜
+- **User Authentication**
+- **Vehicle Inventory Management**
+- **Booking and Reservation**
+- **Scheduling System**
+- **Intelligent Recommendation System**
+- **Notification System**
+- **Live Tracking & Map Integration**
+- **Reporting & Analytics**
+- **User Profile Management**
 
 ## **Links:**
 - **Figma Design**: [EduWheels Figma Design](https://www.figma.com/design/6hVP8vmtOIeV62I0KdMk2g/EduWheels-IT342?node-id=0-1&t=IFjnpyPHnNvj4E1M-1) 🎨
-- **Gantt Chart**: _TBA_ 🗓️
+- **Gantt Chart**: [EduWheels Gantt Chart](https://docs.google.com/spreadsheets/d/1qrNXIpmN1lzh68arGhznQi-Fn3tIMjYHbfhoSnXy6qA/edit?usp=sharing) 🗓️
 
 ---
 
