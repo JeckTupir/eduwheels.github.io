@@ -1,0 +1,40 @@
+package com.example.eduwheels.Service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.eduwheels.Repository.UserRepository;
+import com.example.eduwheels.Entity.UserEntity;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<UserEntity> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<UserEntity> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public UserEntity createUser(UserEntity user) {
+        // You can include additional validation or transformation here if needed
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    // Method to check if a user exists by email
+    public boolean userExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    // Optionally, you could add more methods such as updating a user, etc.
+}
