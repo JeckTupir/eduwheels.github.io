@@ -14,18 +14,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-class UserController {
+public class UserController {
     @Autowired
-    private UserService UserService;
+    private UserService userService;
 
     @GetMapping
     public List<UserEntity> getAllUsers() {
-        return UserService.getAllUsers();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
-        return UserService.getUserById(id)
+        return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -35,13 +35,13 @@ class UserController {
     public ResponseEntity<UserEntity> signUp(@RequestBody UserEntity user) {
         try {
             // Check if user already exists
-            if (UserService.userExists(user.getEmail())) {
+            if (userService.userExists(user.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(null);  // Return bad request if email exists
             }
 
             // Create the user
-            UserEntity createdUser = UserService.createUser(user);
+            UserEntity createdUser = userService.createUser(user);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (Exception e) {
@@ -51,16 +51,12 @@ class UserController {
     }
 
       
-    @PostMapping
-    public UserEntity createUser(@RequestBody UserEntity user) {
-        return UserService.createUser(user);
 
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
-        UserService.deleteUser(id);
+        userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 }
