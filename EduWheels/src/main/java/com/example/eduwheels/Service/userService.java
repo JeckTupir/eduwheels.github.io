@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -22,10 +23,20 @@ public class UserService {
     }
 
     public UserEntity createUser(UserEntity user) {
+
         return userRepository.save(user);
     }
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
+    // Method to check if a user exists by email
+    public boolean userExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    // Optionally, you could add more methods such as updating a user, etc.
 }
+
+

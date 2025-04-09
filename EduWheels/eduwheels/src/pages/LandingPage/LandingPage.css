@@ -1,0 +1,121 @@
+/* LandingPage.css */
+
+.landing-page {
+    background-color: #EEEEEE;
+    min-height: 100vh;
+}
+
+.top-bar {
+    background-color: #5A4040;
+    padding: 1rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+}
+
+.top-bar .avatar {
+    width: 300px;
+    height: 300px;
+    margin-right: 1rem;
+    margin-left: 2rem;
+    margin-bottom: 4rem;
+}
+
+.top-bar .icon-button {
+    color: white;
+    margin-left: 1rem;
+}
+
+.welcome-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5rem;
+    background-color: white;
+}
+
+.welcome-section .image {
+    width: 500px;
+    border-radius: 8px;
+    padding-left: 100px;
+}
+
+.welcome-section .title {
+    color: #5A4040;
+    font-weight: bold;
+}
+
+.welcome-section .subtitle {
+    color: #5A4040;
+    font-size: 25px;
+    margin-top: 3rem;
+}
+
+.calendar-section {
+    background-color: #E1ACAC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-section .card {
+    width: fit-content;
+    padding: 2rem;
+}
+
+.calendar-section .card-content {
+    text-align: center;
+}
+
+.calendar-section .grid-item {
+    text-align: center;
+    padding: 1rem;
+}
+
+.calendar-section .button-group {
+    margin-top: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.calendar-section .button-group .button {
+    background-color: #5A4040;
+}
+
+.calendar-section .button-group .button-schedule {
+    background-color: #CA8787;
+}
+
+.about-section {
+    background-color: #EEEEEE;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.about-section .text {
+    max-width: 60%;
+}
+
+.about-section .text .title {
+    color: #5A4040;
+    font-weight: bold;
+}
+
+.about-section .text .description {
+    color: #5A4040;
+    margin-top: 3rem;
+    font-size: 25px;
+}
+
+.about-section .text .button {
+    margin-top: 2rem;
+    background-color: #CA8787;
+}
+
+.about-section .image {
+    width: 500px;
+}
