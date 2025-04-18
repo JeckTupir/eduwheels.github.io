@@ -23,11 +23,6 @@ class RegisterActivity : AppCompatActivity() {
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passInput = findViewById<EditText>(R.id.passwordInput)
         val registerBtn = findViewById<Button>(R.id.registerButton)
-        val schoolId = findViewById<EditText>(R.id.schoolIdInput).text.toString()
-        val firstName = findViewById<EditText>(R.id.firstNameInput).text.toString()
-        val lastName = findViewById<EditText>(R.id.lastNameInput).text.toString()
-        val username = findViewById<EditText>(R.id.usernameInput).text.toString()
-
 
         retrofitService = Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/")
@@ -64,6 +59,6 @@ class RegisterActivity : AppCompatActivity() {
                 }
             })
         }
-
     }
+
 }
