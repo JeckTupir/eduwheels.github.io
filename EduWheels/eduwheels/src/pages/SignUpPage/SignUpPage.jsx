@@ -97,7 +97,7 @@ export default function Signup() {
     };
 
     const handleBack = () => {
-        window.history.back();
+        window.location.href = '/';
     };
 
     const handleGoogleSignup = async (response) => {

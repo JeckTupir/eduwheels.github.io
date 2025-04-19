@@ -63,7 +63,7 @@ export default function Login() {
 
             if (response.status === 200) {
                 // Redirect to a dashboard or another page
-                window.location.href = '/';
+                window.location.href = '/logged-in';
             }
         } catch (err) {
             console.error('Login error:', err);
@@ -76,7 +76,7 @@ export default function Login() {
     // };
 
     const handleBack = () => {
-        window.history.back();
+        window.location.href = '/';
     };
 
     return (
