@@ -12,6 +12,7 @@
         android:roundIcon="@drawable/ic_launcher_foreground"
         android:supportsRtl="true"
         android:theme="@style/Theme.EduWheelsMobile"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <!-- Launcher: LoginActivity -->
