@@ -12,12 +12,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")  // Apply to all endpoints
-                        .allowedOrigins("http://localhost:3000", "http://localhost:8080")// Allow React frontend on localhost:3000
+                registry.addMapping("/**") // Apply to all endpoints
+                        .allowedOrigins("http://localhost:3000", "http://localhost:8080") // Allow React frontend on localhost:3000
                         .allowedMethods("GET", "POST", "PUT", "DELETE")  // Allow specific methods
+                        .allowedHeaders("*")
                         .allowCredentials(true);  // Allow cookies to be sent (e.g., for sessions)
             }
         };
     }
 }
-
