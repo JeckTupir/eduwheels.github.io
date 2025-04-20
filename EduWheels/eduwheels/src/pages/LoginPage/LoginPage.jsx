@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoginPage.css';
 import { TextField, Button, Grid, Box, Typography, IconButton, Divider } from '@mui/material';
+import { FcGoogle } from 'react-icons/fc';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import busLogo from '/assets/eduwheels-logo.png';
 import backgroundImage from '/assets/background-image.png';
 import axios from 'axios';
+
 
 // // Google logo SVG
 // const googleLogo = (
@@ -16,6 +18,14 @@ import axios from 'axios';
 const API_BASE_URL = "http://localhost:8080";
 
 export default function Login() {
+    useEffect(() => {
+        fetch("http://localhost:8080/api/user", {
+            credentials: "include",
+        })
+            .then(res => res.json())
+            .then(data => console.log("Logged in user:", data));
+    }, []);
+
     const [formData, setFormData] = useState({
         schoolid: '',
         password: ''
@@ -71,9 +81,9 @@ export default function Login() {
         }
     };
 
-    // const handleGoogleLogin = () => {
-    //     window.location.href = 'http://localhost:8080/oauth2/authorization/google'; // Redirect to Google OAuth
-    // };
+    const handleGoogleLogin = () => {
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google'; // Redirect to Google OAuth
+    };
 
     const handleBack = () => {
         window.location.href = '/';
@@ -126,32 +136,40 @@ export default function Login() {
                         <Button type="submit" variant="contained" fullWidth className="login-button">
                             Log In
                         </Button>
+                        <Divider style={{ color: '#ffffff' }}>OR</Divider>
+
+                        <Typography className="signup-switch">
+                            <a href="/signup" className="signup-text" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>Sign Up</a>
+                        </Typography>
+
+                        {/* Google login button */}
+                        <Button
+                            onClick={handleGoogleLogin}
+                            variant="contained"
+                            fullWidth
+                            style={{
+                                marginTop: 20,
+                                backgroundColor: '#4285F4',
+                                color: 'white',
+                                padding: '10px 20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <FcGoogle size={24} /> {/* Or replace with your custom `googleLogo` */}
+                            <span style={{ marginLeft: 10 }}>Log In with Google</span>
+                        </Button>
                     </form>
 
-                    <Divider style={{ color: '#ffffff' }}>OR</Divider>
+                    {/*<Divider style={{ color: '#ffffff' }}>OR</Divider>*/}
 
-                    <Typography className="signup-switch">
-                        <a href="/signup" className="signup-text" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>Sign Up</a>
-                    </Typography>
+                    {/*<Typography className="signup-switch">*/}
+                    {/*    <a href="/signup" className="signup-text" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>Sign Up</a>*/}
+                    {/*</Typography>*/}
 
-                    {/*/!* Google login button *!/*/}
-                    {/*<Button*/}
-                    {/*    onClick={handleGoogleLogin}*/}
-                    {/*    variant="contained"*/}
-                    {/*    fullWidth*/}
-                    {/*    style={{*/}
-                    {/*        marginTop: 20,*/}
-                    {/*        backgroundColor: '#4285F4',*/}
-                    {/*        color: 'white',*/}
-                    {/*        padding: '10px 20px',*/}
-                    {/*        display: 'flex',*/}
-                    {/*        alignItems: 'center',*/}
-                    {/*        justifyContent: 'center',*/}
-                    {/*    }}*/}
-                    {/*>*/}
-                    {/*    {googleLogo}*/}
-                    {/*    <span style={{ marginLeft: 10 }}>Log In with Google</span>*/}
-                    {/*</Button>*/}
+
+
                 </Box>
             </Box>
         </div>

@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -21,37 +20,36 @@ public class SecurityConfig {
         http
                 .cors() // Enable CORS support in Spring Security
                 .and()
-                .authorizeHttpRequests(auth -> auth
+                .authorizeRequests(auth -> auth
                         .requestMatchers(
-                                "/",
-                                "/login**",          // your React page
-                                "/error",
-                                "/users/signup",     // signup API
-                                "/users/login"       // <— allow login API
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                                "/",  // Root endpoint
+                                "/login**",  // React page
+                                "/error",  // Error page
+                                "/users/signup",  // Signup API
+                                "/users/login",  // Login API
+                                "/users/google-login"  // Google login API
+                        ).permitAll()  // Allow unauthenticated access to these endpoints
+                        .anyRequest().authenticated()  // Secure all other endpoints
                 )
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable()
-                .oauth2Login()
+                .csrf().disable()  // Disable CSRF protection (as you're using OAuth2)
+                .formLogin().disable()  // Disable the default form login
+                .httpBasic().disable()  // Disable basic HTTP auth
+                .oauth2Login()  // Enable OAuth2 login
                 .loginPage("/login") // Optional: Custom login page (if needed)
                 .successHandler((request, response, authentication) -> {
-                    // Handle login success, here you can extract user info from OAuth2 authentication
-                    // Example: authenticate using user data, or just redirect to a dashboard page
-                    // You can extract the user information like this:
                     OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
                     OAuth2User user = authToken.getPrincipal();
-                    // Then you can extract details like:
                     String email = user.getAttribute("email");
                     String firstName = user.getAttribute("given_name");
                     String lastName = user.getAttribute("family_name");
 
-                    // You can then save this information to your database or take other actions.
-                    // Here you can call a service to save or update the user.
+                    // Here, you can save user info to the database or take further action
+                    // Optionally, you can redirect to a dashboard or a profile completion page
+
+                    response.sendRedirect("http://localhost:3003/logged-in");
                 })
                 .failureHandler((request, response, exception) -> {
-                    // Handle failure, e.g., user canceled login
+                    // Handle failure (e.g., if user cancels login)
                     response.sendRedirect("/login?error=true");
                 });
 
@@ -61,13 +59,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3003"));  // Specify the exact React frontend origin
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);  // Allow credentials (cookies, headers)
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration);  // Apply the CORS configuration to all paths
         return source;
     }
 }
