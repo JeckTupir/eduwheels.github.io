@@ -90,7 +90,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.example.EduWheelsApplication</mainClass>
+                    <mainClass>com.example.eduwheels.EduWheelsApplication</mainClass>
                 </configuration>
             </plugin>
 

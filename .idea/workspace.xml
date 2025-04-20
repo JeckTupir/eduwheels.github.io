@@ -70,6 +70,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Xyrill\IdeaProjects\IT342-BCD\EduWheels\src\main" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="EduWheelsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
@@ -107,7 +112,7 @@
       <workItem from="1744035428050" duration="770000" />
       <workItem from="1744197953260" duration="4052000" />
       <workItem from="1745074957689" duration="1758000" />
-      <workItem from="1745143038918" duration="3744000" />
+      <workItem from="1745143038918" duration="4096000" />
     </task>
     <servers />
   </component>
