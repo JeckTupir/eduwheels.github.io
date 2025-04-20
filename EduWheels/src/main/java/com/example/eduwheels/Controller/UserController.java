@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -50,7 +51,16 @@ public class UserController {
         }
     }
 
-      
+    @PostMapping("/login")
+    public ResponseEntity<UserEntity> login(@RequestBody UserEntity loginUser) {
+        Optional<UserEntity> user = userService.getAllUsers().stream()
+                .filter(u -> u.getEmail().equals(loginUser.getEmail()) && u.getPassword().equals(loginUser.getPassword()))
+                .findFirst();
+
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
+
 
 
     @DeleteMapping("/{id}")
