@@ -32,6 +32,17 @@ class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/api/user")
+    public Map<String, Object> getUser(@AuthenticationPrincipal OAuth2User principal) {
+        return principal.getAttributes();
+    }
+
+    @GetMapping("/user")
+    public String userInfo(@AuthenticationPrincipal OAuth2User user) {
+        return "Hello, " + user.getAttribute("name");
+    }
+
+
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
