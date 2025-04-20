@@ -5,8 +5,8 @@
 
 .signup-page .signup-container {
     background-color: #E1ACAC;
-    width: 600px;
-    height: 510px;
+    width: 500px;
+    height: 500px;
     margin: 40px auto;
     padding: 2rem;
     border-radius: 12px;
@@ -40,7 +40,7 @@
     background-color: #5A4040;
     color: #fff;
     margin-top: 1rem;
-    margin-left: 14rem;
+    margin-left: 11rem;
     width: 150px;
     height: 40px;
 }
