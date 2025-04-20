@@ -3,10 +3,16 @@ package com.example.eduwheels.Service;
 import com.example.eduwheels.Entity.VehicleEntity;
 import com.example.eduwheels.Repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.annotation.PostConstruct;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class VehicleService {
@@ -14,44 +20,66 @@ public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    // Get all vehicles
+    @Value("${file.upload.directory}")
+    private String uploadDirectory;
+
+    private Path uploadPath;
+
+    @PostConstruct
+    public void init() throws IOException {
+        uploadPath = Paths.get(uploadDirectory).toAbsolutePath().normalize();
+        if (Files.notExists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+    }
+
+    // CRUD methods omitted for brevity… same as before
+
+    public String saveImageToFilesystem(MultipartFile file) throws IOException {
+        // Sanitize and build unique filename
+        String original = Paths.get(file.getOriginalFilename()).getFileName().toString();
+        String filename = UUID.randomUUID() + "_" + original;
+
+        Path target = uploadPath.resolve(filename);
+
+        // Copy, replacing any existing file with the same name
+        Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+
+        // Return the public URI path
+        return "/uploads/" + filename;
+    }
+
     public List<VehicleEntity> getAllVehicles() {
         return vehicleRepository.findAll();
     }
 
-    // Get vehicle by ID
     public VehicleEntity getVehicleById(Long id) {
-        Optional<VehicleEntity> vehicle = vehicleRepository.findById(id);
-        return vehicle.orElse(null);
+        Optional<VehicleEntity> opt = vehicleRepository.findById(id);
+        return opt.orElse(null);
     }
 
-    // Create new vehicle
     public VehicleEntity createVehicle(VehicleEntity vehicle) {
         return vehicleRepository.save(vehicle);
     }
 
-    // Update vehicle
-    public VehicleEntity updateVehicle(Long id, VehicleEntity updatedVehicle) {
-        Optional<VehicleEntity> existingVehicleOpt = vehicleRepository.findById(id);
-        if (existingVehicleOpt.isPresent()) {
-            VehicleEntity existingVehicle = existingVehicleOpt.get();
-            existingVehicle.setPlateNumber(updatedVehicle.getPlateNumber());
-            existingVehicle.setType(updatedVehicle.getType());
-            existingVehicle.setCapacity(updatedVehicle.getCapacity());
-            existingVehicle.setStatus(updatedVehicle.getStatus());
-            return vehicleRepository.save(existingVehicle);
-        } else {
-            return null;
-        }
+    public VehicleEntity updateVehicle(Long id, VehicleEntity updated) {
+        return vehicleRepository.findById(id)
+                .map(existing -> {
+                    existing.setPlateNumber(updated.getPlateNumber());
+                    existing.setType(updated.getType());
+                    existing.setCapacity(updated.getCapacity());
+                    existing.setStatus(updated.getStatus());
+                    existing.setPhotoPath(updated.getPhotoPath());
+                    return vehicleRepository.save(existing);
+                })
+                .orElse(null);
     }
 
-    // Delete vehicle
     public boolean deleteVehicle(Long id) {
         if (vehicleRepository.existsById(id)) {
             vehicleRepository.deleteById(id);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

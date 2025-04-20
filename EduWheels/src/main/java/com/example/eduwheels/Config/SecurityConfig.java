@@ -26,8 +26,16 @@ public class SecurityConfig {
                                 "/",
                                 "/login**",          // your React page
                                 "/error",
+                                "/users",
                                 "/users/signup",     // signup API
-                                "/users/login"       // <— allow login API
+                                "/users/login",       // <— allow login API
+                                "/api/vehicles",
+                                "/api/vehicles/{id}",
+                                "/api/vehicles/withPhoto",
+                                "/api/vehicles/updateWithPhoto/{id}",
+                                "/api/vehicles/uploads/**",
+                                "/uploads/"
+
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

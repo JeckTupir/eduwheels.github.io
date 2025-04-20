@@ -1,0 +1,61 @@
+/* AdminVehiclesPage.css */
+
+.admin-vehicles-page {
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background-color: #EEEEEE; /* Consistent background */
+    min-height: calc(100vh - 64px); /* Adjust for app bar height if present */
+}
+
+.page-title {
+    color: #1D1616; /* darkBrown - Consistent title color */
+    margin-bottom: 20px;
+}
+
+.add-vehicle-button {
+    margin-bottom: 20px;
+    background-color: #5A4040 !important; /* darkBrown - Primary action button */
+    color: white !important;
+    &:hover {
+        background-color: #CA8787 !important; /* mutedPink - Hover effect */
+    }
+}
+
+.vehicles-table-container {
+    box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+}
+
+.MuiTableCell-head {
+    background-color: #f9f9f9; /* Light background for table header */
+    color: #333;
+    font-weight: bold;
+}
+
+.MuiTableCell-body {
+    color: #333;
+}
+
+.MuiIconButton-root {
+    margin-left: 8px;
+}
+
+/* Style for the dialog */
+.MuiDialog-paper {
+    width: 100%;
+    max-width: 500px;
+}
+
+.MuiDialogTitle-root {
+    background-color: #f9f9f9;
+    color: #1D1616; /* darkBrown - Dialog title */
+    padding: 16px;
+    font-weight: bold;
+}
+
+.MuiDialogContent-root {
+    padding: 16px;
+}
+
+.MuiDialogActions-root {
+    padding: 8px 16px;
+}
