@@ -63,7 +63,6 @@ export default function Login() {
         e.preventDefault();
 
         try {
-
             const rawSchoolId = formData.schoolid.replace(/-/g, '');
             const response = await axios.post(
                 `${API_BASE_URL}/users/login`,
@@ -83,6 +82,23 @@ export default function Login() {
 
     const handleGoogleLogin = () => {
         window.location.href = 'http://localhost:8080/oauth2/authorization/google'; // Redirect to Google OAuth
+    };
+
+    const handleLoginSuccess = (response) => {
+        // Send the token to your backend to verify and authenticate
+        fetch('http://localhost:8080/google-login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                token: response.credential, // You can send the token here
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // Handle success response, navigate to appropriate page
+            });
     };
 
     const handleBack = () => {
@@ -133,7 +149,7 @@ export default function Login() {
                             size="small"
                             margin="normal"
                         />
-                        <Button type="submit" variant="contained" fullWidth className="login-button">
+                        <Button onClick={handleLoginSuccess} type="submit" variant="contained" fullWidth className="login-button">
                             Log In
                         </Button>
                         <Divider style={{ color: '#ffffff' }}>OR</Divider>
@@ -161,6 +177,7 @@ export default function Login() {
                             <span style={{ marginLeft: 10 }}>Log In with Google</span>
                         </Button>
                     </form>
+
 
                     {/*<Divider style={{ color: '#ffffff' }}>OR</Divider>*/}
 

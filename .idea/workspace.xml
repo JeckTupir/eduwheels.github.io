@@ -14,8 +14,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JSX File" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -112,7 +112,7 @@
       <workItem from="1744035428050" duration="770000" />
       <workItem from="1744197953260" duration="4052000" />
       <workItem from="1745074957689" duration="1758000" />
-      <workItem from="1745143038918" duration="4096000" />
+      <workItem from="1745143038918" duration="17925000" />
     </task>
     <servers />
   </component>
