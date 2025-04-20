@@ -1,4 +1,4 @@
-package com.example.eduwheelsmobile
+package com.example.eduwheels
 
 import org.junit.Test
 

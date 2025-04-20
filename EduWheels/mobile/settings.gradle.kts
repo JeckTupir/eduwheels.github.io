@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "EduWheelsMobile"
+rootProject.name = "EduWheels"
 include(":app")
