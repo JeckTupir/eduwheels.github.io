@@ -1,13 +1,12 @@
 package com.example.eduwheels.Config;
 
-import com.example.eduwheels.Entity.UserEntity;
-import com.example.eduwheels.Repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -16,52 +15,51 @@ import java.util.Arrays;
 
 @Configuration
 public class SecurityConfig {
-    private final UserRepository userRepository;
-
-    // Constructor injection for UserRepository
-    public SecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable()
-                .authorizeRequests(auth -> auth
+                .cors() // Enable CORS support in Spring Security
+                .and()
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/login**", "/error",
-                                "/users/signup", "/users/login", "/users/google-login"
+                                "/",
+                                "/login**",          // your React page
+                                "/error",
+                                "/users",
+                                "/users/signup",     // signup API
+                                "/users/login",       // <— allow login API
+                                "/api/vehicles",
+                                "/api/vehicles/{id}",
+                                "/api/vehicles/withPhoto",
+                                "/api/vehicles/updateWithPhoto/{id}",
+                                "/api/vehicles/uploads/**",
+                                "/uploads/"
+
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .csrf().disable()
+                .formLogin().disable()
                 .httpBasic().disable()
                 .oauth2Login()
-                .loginPage("/login")
+                .loginPage("/login") // Optional: Custom login page (if needed)
                 .successHandler((request, response, authentication) -> {
+                    // Handle login success, here you can extract user info from OAuth2 authentication
+                    // Example: authenticate using user data, or just redirect to a dashboard page
+                    // You can extract the user information like this:
                     OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
                     OAuth2User user = authToken.getPrincipal();
-
+                    // Then you can extract details like:
                     String email = user.getAttribute("email");
                     String firstName = user.getAttribute("given_name");
                     String lastName = user.getAttribute("family_name");
 
-                    UserEntity existingUser = userRepository.findByEmail(email).orElse(null);
-                    UserEntity userEntity;
-
-                    if (existingUser == null) {
-                        userEntity = new UserEntity();
-                        userEntity.setEmail(email);
-                        userEntity.setFirstName(firstName);
-                        userEntity.setLastName(lastName);
-                        userRepository.save(userEntity);
-
-                        response.sendRedirect("http://localhost:3000/complete-profile?userId=" + userEntity.getUserid());
-                    } else {
-                        response.sendRedirect("http://localhost:3000/logged-in");
-                    }
+                    // You can then save this information to your database or take other actions.
+                    // Here you can call a service to save or update the user.
                 })
                 .failureHandler((request, response, exception) -> {
+                    // Handle failure, e.g., user canceled login
                     response.sendRedirect("/login?error=true");
                 });
 
@@ -71,13 +69,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));  // Specify React frontend origin
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);  // Allow credentials (cookies, headers)
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);  // Apply the CORS configuration to all paths
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

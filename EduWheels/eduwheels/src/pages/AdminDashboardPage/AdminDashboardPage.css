@@ -1,0 +1,98 @@
+/* AdminDashboardPage.css */
+
+.admin-dashboard-page {
+    font-family: 'Inter', sans-serif;
+    background-color: #EEEEEE; /* lightGray - Consistent background */
+    min-height: 100vh;
+    color: #333;
+}
+
+/* --- AppBar/Toolbar --- */
+.toolbar-logo {
+    display: flex;
+    align-items: center;
+    padding-left: 16px; /* Default padding */
+}
+
+.logo-admin {
+    width: 30px;
+    height: 30px;
+    margin-right: 16px;
+}
+
+.logo-text {
+    color: #1D1616; /* darkBrown - Consistent text color */
+}
+
+/* --- Drawer --- */
+.MuiDrawer-paper {
+    background-color: #f9f9f9; /* Slightly lighter background for contrast */
+    color: #333;
+}
+
+.nav-item {
+    color: #1D1616; /* darkBrown - Consistent text color */
+}
+
+.nav-icon {
+    color: #007BFF; /* Primary color for icons */
+}
+
+.logout-button {
+    margin-top: auto; /* Push logout to the bottom */
+}
+
+.logout-icon {
+    color: #d32f2f; /* Red color for logout icon */
+}
+
+.MuiListItem-button:hover {
+    background-color: rgba(0, 0, 0, 0.08); /* Subtle hover effect */
+}
+
+.MuiListItem-root.Mui-selected {
+    background-color: rgba(0, 123, 255, 0.12); /* Subtle selection highlight */
+}
+
+.MuiListItem-root.Mui-selected .MuiListItemIcon-root,
+.MuiListItem-root.Mui-selected .MuiListItemText-primary {
+    color: #007BFF; /* Primary color for selected items */
+}
+
+/* --- Main Content --- */
+.dashboard-title {
+    color: #1D1616; /* darkBrown - Consistent title color */
+    margin-bottom: 1rem;
+}
+
+.dashboard-description {
+    color: #6C757D; /* secondary - Muted description color */
+    margin-bottom: 2rem;
+}
+
+.dashboard-widgets {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.widget {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.widget-title {
+    color: #5A4040; /* darkBrown - Widget title */
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.widget-value {
+    color: #007BFF; /* Primary color for values */
+    font-size: 2rem;
+    font-weight: 700;
+}

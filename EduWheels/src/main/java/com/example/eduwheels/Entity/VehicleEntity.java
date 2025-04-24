@@ -9,7 +9,7 @@ public class VehicleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long vehicleId;
-    
+
     @Column(name = "plate_number", nullable = false, unique = true)
     private String plateNumber;
 
@@ -22,15 +22,19 @@ public class VehicleEntity {
     @Column(nullable = false)
     private String status;
 
+    @Column(name = "photo_path", columnDefinition = "TEXT")
+    private String photoPath; // Store the path to the image file
+
     // Constructors
     public VehicleEntity() {
     }
 
-    public VehicleEntity(String plateNumber, String type, int capacity, String status) {
+    public VehicleEntity(String plateNumber, String type, int capacity, String status, String photoPath) {
         this.plateNumber = plateNumber;
         this.type = type;
         this.capacity = capacity;
         this.status = status;
+        this.photoPath = photoPath;
     }
 
     // Getters and Setters
@@ -72,5 +76,13 @@ public class VehicleEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }

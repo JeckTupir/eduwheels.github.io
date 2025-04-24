@@ -1,0 +1,92 @@
+.admin-users-page {
+    padding: 20px;
+}
+
+.page-title {
+    margin-bottom: 20px;
+    color: #1a202c;
+}
+
+.add-user-button {
+    margin-bottom: 20px;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+    width: 300px;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    padding: 8px;
+    flex: 1;
+}
+
+.search-icon {
+    color: #a0aec0;
+}
+
+.table-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+    background-color: #f7fafc;
+}
+
+.table-row:nth-of-type(odd) {
+    background-color: #edf2f7;
+}
+
+.table-cell {
+    padding: 12px;
+}
+
+.actions-container {
+    display: flex;
+    align-items: center;
+}
+
+.edit-button {
+    margin: 4px;
+    color: #3182ce;
+}
+
+.delete-button {
+    margin: 4px;
+    color: #e53e3e;
+}
+
+.dialog-paper {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.dialog-title {
+    padding: 16px 24px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dialog-content {
+    padding: 24px;
+}
+
+.dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.input-field {
+    margin: 8px 0;
+}
