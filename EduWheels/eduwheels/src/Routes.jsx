@@ -13,6 +13,7 @@ import AdminVehicles from './pages/AdminDashboardPage/AdminVehiclesPage.jsx';
 // import AdminReviews from './pages/AdminDashboardPage/AdminReviewsPage.jsx';
 // import AdminReports from './pages/AdminDashboardPage/AdminReportsPage.jsx';
 import AdminUsers from './pages/AdminDashboardPage/AdminUsersPage.jsx';
+import OAuthCallbackHandler from './pages/Handler/OAuthCallbackHandler.jsx';
 
 const RoutesComponent = () => {
     return (
@@ -24,6 +25,7 @@ const RoutesComponent = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/logged-in" element={<LoggedIn />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/oauth2/callback" element={<OAuthCallbackHandler />} />
 
                 <Route path="/admin" element={<AdminDashboard />}>
                     <Route path="dashboard" element={<div>Welcome to the Dashboard Content</div>} /> {/* Placeholder */}
