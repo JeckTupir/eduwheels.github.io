@@ -3,19 +3,23 @@ package com.example.eduwheels.user
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.*
 import com.example.eduwheels.R
-import com.example.eduwheels.user.LogIn // Update if your login activity has a different name or location
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 class Register : Activity() {
+
+    private val existingUsernames = mutableListOf<String>()
+    private val existingEmails = mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_register)
 
         val firstName = findViewById<EditText>(R.id.firstName)
@@ -26,95 +30,79 @@ class Register : Activity() {
         val password = findViewById<EditText>(R.id.password)
         val email = findViewById<EditText>(R.id.email)
 
-        val registerButton = findViewById<Button>(R.id.registerButton)   // Add ID in XML
-        val loginLink = findViewById<TextView>(R.id.loginRedirectText)  // Add ID in XML
+        val registerButton = findViewById<Button>(R.id.registerButton)
+        val loginLink = findViewById<TextView>(R.id.loginRedirectText)
+
+        registerButton.isEnabled = false
+
+        // Enable button only when all fields are filled
+        val fields = listOf(firstName, lastName, repass, schoolID, username, password, email)
+
+        fun validateFields() {
+            registerButton.isEnabled = fields.all { it.text.toString().isNotBlank() }
+        }
+
+        fields.forEach {
+            it.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) = validateFields()
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+        }
 
         registerButton.setOnClickListener {
-            if (!firstName.text.toString().isNullOrEmpty()
-                && !lastName.text.toString().isNullOrEmpty()
-                && !username.text.toString().isNullOrEmpty()
-                && !password.text.toString().isNullOrEmpty()
-                && !email.text.toString().isNullOrEmpty()
-                && !repass.text.toString().isNullOrEmpty()
-                && !schoolID.text.toString().isNullOrEmpty()
-            ) {
+            val uname = username.text.toString()
+            val mail = email.text.toString()
 
-                saveReg(
-                    firstName.text.toString(),
-                    lastName.text.toString(),
-                    username.text.toString(),
-                    password.text.toString(),
-                    email.text.toString(),
-                    password.text.toString(),
-                    password.text.toString()
-                )
-
-                startActivity(
-                    Intent(this, LogIn::class.java).apply {
-                        putExtra("username", username.text.toString())
-                        putExtra("password", password.text.toString())
-                        putExtra("repass", repass.text.toString())
-                        putExtra("firstName", firstName.text.toString())
-                        putExtra("lastName", lastName.text.toString())
-                        putExtra("schoolID", schoolID.text.toString())
-                        putExtra("email", email.text.toString())
-                    }
-                )
-
-            } else {
-                loginLink.setOnClickListener {
-//            val intent = Intent(this, LogIn::class.java)
-//            startActivity(intent)
-//            finish()
-        }
+            when {
+                existingUsernames.contains(uname) -> {
+                    Toast.makeText(this, "Username already taken", Toast.LENGTH_SHORT).show()
+                }
+                existingEmails.contains(mail) -> {
+                    Toast.makeText(this, "Email already registered", Toast.LENGTH_SHORT).show()
+                }
+                password.text.toString() != repass.text.toString() -> {
+                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    saveUserToDB(
+                        uname,
+                        password.text.toString(),
+                        firstName.text.toString(),
+                        lastName.text.toString(),
+                        schoolID.text.toString(),
+                        mail
+                    )
+                }
             }
-
         }
 
-//
+        loginLink.setOnClickListener {
+            startActivity(Intent(this, LogIn::class.java))
+            finish()
+        }
+
+        // Fetch users when screen starts
+        fetchExistingUsers()
     }
 
-    private fun saveReg(
-        username: String,
-        password: String,
-        repass: String,
-        firstName: String,
-        lastName: String,
-        schoolID: String,
-        email: String
-    ) {
-        val profileInfo = """{
-        "username": "$username",
-        "password": "$password",
-        "firstName": "$firstName",
-        "lastName": "$lastName",
-        "repass": "$repass",
-        "email": "$email"
-        "schoolid": "$schoolID"
-    }""".trimIndent()
-
+    private fun fetchExistingUsers() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val url =
-                    java.net.URL("http://10.0.2.2:8080/users/signup")  // Replace with your IP if needed
-                val connection = url.openConnection() as java.net.HttpURLConnection
-
-                connection.requestMethod = "POST"
-                connection.setRequestProperty("Content-Type", "application/json")
-                connection.doOutput = true
-
-                val outputStream = connection.outputStream
-                val writer = outputStream.bufferedWriter()
-                writer.write(profileInfo)
-                writer.flush()
-                writer.close()
-                outputStream.close()
+                val url = URL("http://10.0.2.2:8080/users")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
 
                 val responseCode = connection.responseCode
-                if (responseCode == java.net.HttpURLConnection.HTTP_CREATED) {
-                    println("✅ Registered Successfully")
-                } else {
-                    println("❌ Registration failed: ${connection.responseMessage}")
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val response = connection.inputStream.bufferedReader().readText()
+                    val usersArray = JSONArray(response)
+
+                    for (i in 0 until usersArray.length()) {
+                        val user = usersArray.getJSONObject(i)
+                        existingUsernames.add(user.getString("username"))
+                        existingEmails.add(user.getString("email"))
+                    }
                 }
 
                 connection.disconnect()
@@ -123,5 +111,61 @@ class Register : Activity() {
             }
         }
     }
-}
 
+    private fun saveUserToDB(
+        username: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        schoolID: String,
+        email: String
+    ) {
+        val userJson = JSONObject().apply {
+            put("username", username)
+            put("password", password)
+            put("firstName", firstName)
+            put("lastName", lastName)
+            put("schoolid", schoolID)
+            put("email", email)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val url = URL("http://10.0.2.2:8080/users/signup")
+                val connection = url.openConnection() as HttpURLConnection
+
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json")
+                connection.doOutput = true
+
+                connection.outputStream.bufferedWriter().use { writer ->
+                    writer.write(userJson.toString())
+                }
+
+                val responseCode = connection.responseCode
+
+                if (responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_OK) {
+                    // ✅ Only navigate AFTER success
+                    runOnUiThread {
+                        Toast.makeText(this@Register, "Registered successfully!", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@Register, LogIn::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                } else {
+                    val error = connection.errorStream?.bufferedReader()?.readText()
+                    runOnUiThread {
+                        Toast.makeText(this@Register, "Failed to register: $error", Toast.LENGTH_LONG).show()
+                    }
+                }
+
+                connection.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                runOnUiThread {
+                    Toast.makeText(this@Register, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+}

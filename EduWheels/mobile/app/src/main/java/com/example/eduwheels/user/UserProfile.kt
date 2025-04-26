@@ -1,53 +1,135 @@
 package com.example.eduwheels.user
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.PopupMenu
+import android.util.Log
+import android.widget.*
 import com.example.eduwheels.R
+import com.example.eduwheels.api.RetrofitService
+import com.example.eduwheels.models.User
+import com.example.eduwheels.util.SessionManager
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+
 
 class UserProfile : Activity() {
+
+    private lateinit var retrofitService: RetrofitService
+    private lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_user_profile)
 
-        val menuIcon = findViewById<ImageView>(R.id.headerMenu)
+        val firstNameField = findViewById<EditText>(R.id.firstNameInput)
+        val lastNameField = findViewById<EditText>(R.id.lastNameInput)
+        val schoolIdField = findViewById<EditText>(R.id.schoolIdInput)
+        val usernameField = findViewById<EditText>(R.id.usernameInput)
+        val oldPasswordField = findViewById<EditText>(R.id.oldPasswordInput)
+        val newPasswordField = findViewById<EditText>(R.id.newPasswordInput)
+        val reenterPasswordField = findViewById<EditText>(R.id.reenterPasswordInput)
+        val updateButton = findViewById<Button>(R.id.btnUpdateProfile)
 
-        menuIcon.setOnClickListener { view ->
-            val popup = PopupMenu(this, view)
-            popup.menuInflater.inflate(R.menu.dropdown_menu, popup.menu)
+        sessionManager = SessionManager(this)
+        val currentSchoolId = sessionManager.getSchoolId()
+        Log.d("UserProfile", "Session School ID: $currentSchoolId")
 
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.menu_profile -> {
-                        val intent = Intent(this, UserProfile::class.java)
-                        startActivity(intent)
-                        true
-                    }
-                    R.id.menu_vehicle -> {
-                        // startActivity(Intent(this, VehicleActivity::class.java))
-                        true
-                    }
-                    R.id.menu_contact -> {
-                        // Navigate to Contact
-                        true
-                    }
-                    R.id.menu_about -> {
-                        // Navigate to About Us
-                        true
-                    }
-                    R.id.menu_help -> {
-                        // Show help
-                        true
-                    }
-                    else -> false
+
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+
+        retrofitService = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(RetrofitService::class.java)
+
+        // 🔍 Fetch and display user data
+        retrofitService.getUserBySchoolId(currentSchoolId ?: "")
+            .enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>, response: Response<User>) {
+                response.body()?.let { user ->
+                    firstNameField.setText(user.firstName)
+                    lastNameField.setText(user.lastName)
+                    schoolIdField.setText(user.schoolid)
+                    usernameField.setText(user.username)
+
+                    // ✅ Clear password fields every load
+                    oldPasswordField.setText("")
+                    newPasswordField.setText("")
+                    reenterPasswordField.setText("")
                 }
             }
 
-            popup.show()
-        }
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(this@UserProfile, "Failed to load user data", Toast.LENGTH_SHORT).show()
+            }
+        })
 
+        // 🔁 Handle profile update
+        updateButton.setOnClickListener {
+            val oldPass = oldPasswordField.text.toString().trim()
+            val newPass = newPasswordField.text.toString().trim()
+            val rePass = reenterPasswordField.text.toString().trim()
+
+            // 🔐 Basic validation
+            if (oldPass.isBlank() || newPass.isBlank() || rePass.isBlank()) {
+                Toast.makeText(this, "Please complete all password fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (newPass != rePass) {
+                Toast.makeText(this, "New passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 🔁 Verify old password & update
+            retrofitService.getUserBySchoolId(currentSchoolId ?: "")
+                .enqueue(object : Callback<User> {
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    val user = response.body()
+                    if (user != null && user.password == oldPass) {
+                        val updatedUser = user.copy(
+                            firstName = firstNameField.text.toString(),
+                            lastName = lastNameField.text.toString(),
+                            username = usernameField.text.toString(),
+                            password = newPass // ✅ Only password is updated
+                        )
+
+                        retrofitService.updateUser(currentSchoolId ?: "", updatedUser)
+                            .enqueue(object : Callback<User> {
+                                override fun onResponse(call: Call<User>, response: Response<User>) {
+                                    Toast.makeText(this@UserProfile, "Profile updated!", Toast.LENGTH_SHORT).show()
+                                    // Optional: clear password fields again
+                                    oldPasswordField.setText("")
+                                    newPasswordField.setText("")
+                                    reenterPasswordField.setText("")
+                                }
+
+                                override fun onFailure(call: Call<User>, t: Throwable) {
+                                    Toast.makeText(this@UserProfile, "Update failed", Toast.LENGTH_SHORT).show()
+                                }
+                            })
+                    } else {
+                        Toast.makeText(this@UserProfile, "Old password is incorrect", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Toast.makeText(this@UserProfile, "Failed to fetch user", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
     }
 }

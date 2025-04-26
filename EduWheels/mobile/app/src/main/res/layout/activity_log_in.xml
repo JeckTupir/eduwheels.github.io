@@ -22,7 +22,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Username"
+            android:id="@+id/schoolId"
+            android:hint="School ID"
             android:backgroundTint="#FFFFFF"
             android:background="@android:color/white"
             android:paddingHorizontal="16dp"
@@ -37,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:hint="Password"
+            android:id="@+id/password"
             android:inputType="textPassword"
             android:backgroundTint="#FFFFFF"
             android:background="@android:color/white"

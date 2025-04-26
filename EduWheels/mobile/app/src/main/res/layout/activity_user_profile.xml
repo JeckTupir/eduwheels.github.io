@@ -42,7 +42,8 @@
             android:layout_marginTop="70dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
+            android:hint=""
+            android:id="@+id/firstNameInput"
             android:background="@android:color/white"
             android:padding="12dp"
             android:layout_marginBottom="12dp" />
@@ -50,7 +51,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Last Name"
+            android:hint=""
+            android:id="@+id/lastNameInput"
             android:background="@android:color/white"
             android:padding="12dp"
             android:layout_marginBottom="12dp" />
@@ -58,7 +60,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Contact Number"
+            android:hint=""
+            android:id="@+id/schoolIdInput"
             android:inputType="phone"
             android:background="@android:color/white"
             android:padding="12dp"
@@ -67,7 +70,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
+            android:hint=""
+            android:id="@+id/usernameInput"
             android:background="@android:color/white"
             android:padding="12dp"
             android:layout_marginBottom="12dp" />
@@ -77,6 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Old Password"
+            android:id="@+id/oldPasswordInput"
             android:inputType="textPassword"
             android:background="@android:color/white"
             android:padding="12dp"
@@ -87,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="New Password"
+            android:id="@+id/newPasswordInput"
             android:inputType="textPassword"
             android:background="@android:color/white"
             android:padding="12dp"
@@ -97,6 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Re-enter Password"
+            android:id="@+id/reenterPasswordInput"
             android:inputType="textPassword"
             android:background="@android:color/white"
             android:padding="12dp"
