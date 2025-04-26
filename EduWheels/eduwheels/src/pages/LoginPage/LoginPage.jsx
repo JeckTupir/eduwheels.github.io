@@ -1,67 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './LoginPage.css';
-import { TextField, Button, Grid, Box, Typography, IconButton, Divider } from '@mui/material';
+import {
+    TextField,
+    Button,
+    Box,
+    Typography,
+    IconButton,
+    Divider
+} from '@mui/material';
 import { FcGoogle } from 'react-icons/fc';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import busLogo from '/assets/eduwheels-logo.png';
 import backgroundImage from '/assets/background-image.png';
 import axios from 'axios';
 
-
-// // Google logo SVG
-// const googleLogo = (
-//     <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-//         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.93c-.64.37-1.36.58-2 .58-1.66 0-3-1.34-3-3s1.34-3 3-3c.64 0 1.27.21 1.81.58l.19-.93c-.68-.43-1.47-.68-2.5-.68-2.21 0-4 1.79-4 4s1.79 4 4 4c1.03 0 1.82-.34 2.5-.68l-.19-.93zm-1-2.93c-.64.37-1.36.58-2 .58-1.66 0-3-1.34-3-3s1.34-3 3-3c.64 0 1.27.21 1.81.58l.19-.93c-.68-.43-1.47-.68-2.5-.68-2.21 0-4 1.79-4 4s1.79 4 4 4c1.03 0 1.82-.34 2.5-.68l-.19-.93z"></path>
-//     </svg>
-// );
-
 const API_BASE_URL = "http://localhost:8080";
 
 export default function Login() {
-    useEffect(() => {
-        fetch("http://localhost:8080/api/user", {
-            credentials: "include",
-        })
-            .then(res => res.json())
-            .then(data => console.log("Logged in user:", data));
-    }, []);
-
     const [formData, setFormData] = useState({
         schoolid: '',
         password: ''
     });
 
-    // Function to format schoolid as 22-2222-222
     const formatSchoolId = (value) => {
-        // Remove all non-numeric characters
-        const cleanedValue = value.replace(/\D/g, '');
-
-        // Apply the pattern 22-2222-222
-        const formattedValue = cleanedValue.replace(/(\d{2})(\d{4})(\d{3})/, '$1-$2-$3');
-
-        return formattedValue.slice(0, 11); // Limit to 11 characters (the exact length for this pattern)
+        const cleaned = value.replace(/\D/g, '');
+        return cleaned.replace(/^(\d{2})(\d{4})(\d{3}).*/, '$1-$2-$3').slice(0, 11);
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        if (name === 'schoolid') {
-            // Format schoolid while typing
-            setFormData((prev) => ({
-                ...prev,
-                [name]: formatSchoolId(value),
-            }));
-        } else {
-            setFormData((prev) => ({
-                ...prev,
-                [name]: value,
-            }));
-        }
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === 'schoolid' ? formatSchoolId(value) : value
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
             const rawSchoolId = formData.schoolid.replace(/-/g, '');
             const response = await axios.post(
@@ -71,34 +46,23 @@ export default function Login() {
             );
 
             if (response.status === 200) {
-                // Redirect to a dashboard or another page
+                const { user, token } = response.data;
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
                 window.location.href = '/logged-in';
             }
         } catch (err) {
             console.error('Login error:', err);
-            alert('Login failed!');
+            if (err.response?.status === 401) {
+                alert('Invalid credentials. Please try again.');
+            } else {
+                alert('Login failed! Please try again later.');
+            }
         }
     };
 
     const handleGoogleLogin = () => {
-        window.location.href = 'http://localhost:8080/oauth2/authorization/google'; // Redirect to Google OAuth
-    };
-
-    const handleLoginSuccess = (response) => {
-        // Send the token to your backend to verify and authenticate
-        fetch('http://localhost:8080/google-login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: response.credential, // You can send the token here
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                // Handle success response, navigate to appropriate page
-            });
+        window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
     };
 
     const handleBack = () => {
@@ -120,13 +84,15 @@ export default function Login() {
                     <IconButton className="back-button" onClick={handleBack}>
                         <ArrowBackIosIcon style={{ color: '#5A4040' }} />
                     </IconButton>
+
                     <Box className="logo-section">
                         <img src={busLogo} alt="Bus Logo" className="logo" />
-                        <Typography variant="h5" className="logo-text"></Typography>
                     </Box>
+
+                    {/* Standard Login Form */}
                     <form onSubmit={handleSubmit} className="login-input-form">
                         <TextField
-                            label="School ID"
+                            label="School ID (e.g., 12-3456-789)"
                             name="schoolid"
                             value={formData.schoolid}
                             onChange={handleChange}
@@ -134,9 +100,8 @@ export default function Login() {
                             fullWidth
                             size="small"
                             margin="normal"
-                            inputProps={{
-                                maxLength: 11 // Ensure no more than 11 characters (for the 22-2222-222 format)
-                            }}
+                            inputProps={{ maxLength: 11 }}
+                            placeholder="12-3456-789"
                         />
                         <TextField
                             label="Password"
@@ -149,44 +114,59 @@ export default function Login() {
                             size="small"
                             margin="normal"
                         />
-                        <Button onClick={handleLoginSuccess} type="submit" variant="contained" fullWidth className="login-button">
-                            Log In
-                        </Button>
-                        <Divider style={{ color: '#ffffff' }}>OR</Divider>
-
-                        <Typography className="signup-switch">
-                            <a href="/signup" className="signup-text" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>Sign Up</a>
-                        </Typography>
-
-                        {/* Google login button */}
                         <Button
-                            onClick={handleGoogleLogin}
+                            type="submit"
                             variant="contained"
                             fullWidth
-                            style={{
-                                marginTop: 20,
-                                backgroundColor: '#4285F4',
-                                color: 'white',
-                                padding: '10px 20px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
+                            className="login-button"
                         >
-                            <FcGoogle size={24} /> {/* Or replace with your custom `googleLogo` */}
-                            <span style={{ marginLeft: 10 }}>Log In with Google</span>
+                            Log In
                         </Button>
                     </form>
 
+                    <Divider style={{ margin: '20px 0', color: '#ffffff' }}>OR</Divider>
 
-                    {/*<Divider style={{ color: '#ffffff' }}>OR</Divider>*/}
+                    {/* Google OAuth2 Login */}
+                    <Button
+                        onClick={handleGoogleLogin}
+                        variant="contained"
+                        fullWidth
+                        style={{
+                            backgroundColor: '#ffffff',
+                            color: '#444',
+                            padding: '10px 20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textTransform: 'none',
+                            boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)',
+                            marginBottom: '10px'
+                        }}
+                    >
+                        <FcGoogle size={24} />
+                        <span style={{ marginLeft: 10, fontWeight: 500 }}>
+                            Log In with Google
+                        </span>
+                    </Button>
 
-                    {/*<Typography className="signup-switch">*/}
-                    {/*    <a href="/signup" className="signup-text" style={{ color: '#ffffff', textDecoration: 'none', fontWeight: 'bold' }}>Sign Up</a>*/}
-                    {/*</Typography>*/}
-
-
-
+                    <Typography
+                        className="signup-switch"
+                        align="center"
+                        style={{ marginTop: '15px' }}
+                    >
+                        Don't have an account?{' '}
+                        <a
+                            href="/signup"
+                            className="signup-text"
+                            style={{
+                                color: '#ffffff',
+                                textDecoration: 'underline',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            Sign Up
+                        </a>
+                    </Typography>
                 </Box>
             </Box>
         </div>
