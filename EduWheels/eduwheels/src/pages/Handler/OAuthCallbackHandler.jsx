@@ -1,26 +1,57 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { parseJwt } from './parseJwt';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const OAuthCallbackHandler = () => {
+const API_BASE_URL = "http://localhost:8080";
+
+export default function OAuthCallbackHandler() {
     const navigate = useNavigate();
+    const { search } = useLocation();
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/users/me', { withCredentials: true });
-                const user = response.data;
+        const params = new URLSearchParams(search);
+        const isPending = params.get('pending') === 'true';
+        const token = params.get('token');
+
+        if (isPending) {
+            navigate('/complete-profile');
+            return;
+        }
+
+        if (token) {
+            // Store JWT
+            localStorage.setItem('token', token);
+
+            // Parse out the username claim
+            const claims = parseJwt(token);
+            const tokenUsername = claims.username || claims.sub || '';
+
+            (async () => {
+                let user = {};
+                try {
+                    const resp = await axios.get(`${API_BASE_URL}/users/me`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                    });
+                    user = resp.data;
+                } catch (err) {
+                    console.warn('Couldn’t fetch /users/me, falling back to token:', err);
+                }
+
+                // Ensure we carry over username
+                if (!user.username) {
+                    user.username = tokenUsername;
+                }
+
                 localStorage.setItem('user', JSON.stringify(user));
-                navigate(user.isProfileComplete ? '/logged-in' : '/complete-profile');
-            } catch (error) {
-                console.error('Failed to fetch profile:', error);
-                navigate('/login');
-            }
-        };
-        fetchProfile();
-    }, [navigate]);
+                navigate('/logged-in');
+            })();
 
-    return <div>Logging in...</div>; // Optional loading message
-};
+            return;
+        }
 
-export default OAuthCallbackHandler;
+        navigate('/login');
+    }, [navigate, search]);
+
+    return <div>Finishing login…</div>;
+}

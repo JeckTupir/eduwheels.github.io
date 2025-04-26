@@ -12,48 +12,65 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Replace with a more secure key in production
-    private final String SECRET_KEY = "2bf3d6f5d0839c89b1a3f9d4c76c2b5fa453b3cf5f6b3f7b21b38c9f45a5ef8e"; // 🔐 Keep this safe!
+    // Replace with a more secure key in production (Base64-encoded)
+    private final String SECRET_KEY = "2bf3d6f5d0839c89b1a3f9d4c76c2b5fa453b3cf5f6b3f7b21b38c9f45a5ef8e";
 
-    // Method to encode the secret key into Base64
-    private byte[] getSecretKeyBytes() {
-        // Encode the secret key into Base64 bytes before using it
-        return Base64.getEncoder().encode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Base64.getEncoder()
+                .encode(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(String email) {
+    /**
+     * Generate a JWT token containing the email as subject and username as a custom claim.
+     *
+     * @param email    the user email to be set as subject
+     * @param username the user username to be set as a custom claim
+     * @return the JWT token string
+     */
+    public String generateToken(String email, String username) {
         long expirationTime = 1000 * 60 * 60 * 10; // 10 hours
-
-        // Use Base64-encoded key
-        SecretKey key = Keys.hmacShaKeyFor(getSecretKeyBytes());
 
         return Jwts.builder()
                 .setSubject(email)
+                .claim("username", username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
+    /**
+     * Extract email (subject) from JWT token
+     */
     public String extractEmail(String token) {
-        // Use Base64-encoded key
-        SecretKey key = Keys.hmacShaKeyFor(getSecretKeyBytes());
-
-        return Jwts.parser()
-                .setSigningKey(key)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return parseClaims(token).getSubject();
     }
 
+    /**
+     * Extract username claim from JWT token
+     */
+    public String extractUsername(String token) {
+        return parseClaims(token).get("username", String.class);
+    }
+
+    /**
+     * Validate the token (signature and expiration)
+     */
     public boolean validateToken(String token) {
         try {
-            // Use Base64-encoded key
-            SecretKey key = Keys.hmacShaKeyFor(getSecretKeyBytes());
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

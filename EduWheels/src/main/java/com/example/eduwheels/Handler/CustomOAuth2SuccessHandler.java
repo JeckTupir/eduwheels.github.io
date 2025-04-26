@@ -13,7 +13,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Component
@@ -22,35 +23,50 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     private final GoogleOAuth2UserService googleOAuth2UserService;
     private final JwtUtil jwtUtil;
 
-    public static final String PENDING_OAUTH2_USER_ATTRIBUTE_KEY = "pendingOAuth2UserDetails";
-
     public CustomOAuth2SuccessHandler(GoogleOAuth2UserService googleOAuth2UserService, JwtUtil jwtUtil) {
         this.googleOAuth2UserService = googleOAuth2UserService;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request,
-                                        HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) throws IOException, ServletException {
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         UserEntity user = googleOAuth2UserService.prepareOrFetchUser(oAuth2User);
 
-        if (user.getUserid() == null || user.getSchoolid() == null || user.getSchoolid().trim().isEmpty()) {
-            // Save details temporarily in session for profile completion
-            HttpSession session = request.getSession();
-            Map<String, String> pendingUserDetails = new HashMap<>();
-            pendingUserDetails.put("email", oAuth2User.getAttribute("email"));
-            pendingUserDetails.put("firstName", oAuth2User.getAttribute("given_name"));
-            pendingUserDetails.put("lastName", oAuth2User.getAttribute("family_name"));
-            session.setAttribute(PENDING_OAUTH2_USER_ATTRIBUTE_KEY, pendingUserDetails);
+        String frontendCallback = "http://localhost:3000/oauth2/callback";
 
-            response.sendRedirect("http://localhost:3000/complete-profile");
-        } else {
-            // Generate JWT and redirect
-            String token = jwtUtil.generateToken(user.getEmail());
-            response.sendRedirect("http://localhost:3000/logged-in?token=" + token);
+        // If the user still needs to finish profile, signal the frontend to go to the form:
+        if (user.getUserid() == null
+                || user.getSchoolid() == null
+                || user.getSchoolid().trim().isEmpty()) {
+
+            HttpSession session = request.getSession();
+            session.setAttribute(
+                    "pendingOAuth2UserDetails",
+                    Map.of(
+                            "email", oAuth2User.getAttribute("email"),
+                            "firstName", oAuth2User.getAttribute("given_name"),
+                            "lastName", oAuth2User.getAttribute("family_name")
+                    )
+            );
+
+            // Redirect to your unified callback with a pending flag
+            String redirectUrl = frontendCallback + "?pending=true";
+            response.sendRedirect(redirectUrl);
+            return;
         }
+
+        // Otherwise the user is fully onboarded → issue a token
+        String token = jwtUtil.generateToken(user.getEmail(), user.getUsername());
+        String encodedToken = URLEncoder.encode(token, StandardCharsets.UTF_8);
+
+        // Redirect to the same callback, passing the token
+        String redirectUrl = frontendCallback + "?token=" + encodedToken;
+        response.sendRedirect(redirectUrl);
     }
 }

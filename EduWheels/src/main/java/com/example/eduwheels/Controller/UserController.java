@@ -93,39 +93,35 @@ public class UserController {
                         .body(Map.of("message", "User already exists."));
             }
 
+            // Build and save the new user
             UserEntity newUser = new UserEntity();
             newUser.setEmail(email);
             newUser.setFirstName(pending.get("firstName"));
             newUser.setLastName(pending.get("lastName"));
-            newUser.setUsername(pending.getOrDefault("username", pending.get("firstName") + pending.get("lastName")));
+            String username = pending.getOrDefault("username", pending.get("firstName") + pending.get("lastName"));
+            newUser.setUsername(username);
             newUser.setPassword(passwordEncoder.encode(rawPassword));
             newUser.setSchoolid(rawSchoolId);
 
             googleOAuth2UserService.saveUserProfile(newUser);
             session.removeAttribute(SecurityConfig.PENDING_OAUTH2_USER_ATTRIBUTE_KEY);
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    newUser.getEmail(), null, List.of());
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            // Generate JWT including email & username
+            String token = jwtUtil.generateToken(newUser.getEmail(), newUser.getUsername());
 
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
-            boolean isSecure = request.isSecure();
-            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("JSESSIONID", session.getId());
-            cookie.setPath("/");
-            cookie.setHttpOnly(true);
-            cookie.setSecure(isSecure);
-            cookie.setMaxAge(24 * 60 * 60);
-            response.addCookie(cookie);
-
+            // Prepare response payload
             Map<String, Object> resp = new HashMap<>();
+            resp.put("token", token);  // ← NEW: return the JWT
             resp.put("message", "Profile completed successfully.");
+
             Map<String, Object> userDetails = new HashMap<>();
             userDetails.put("id", newUser.getUserid());
             userDetails.put("name", newUser.getFirstName() + " " + newUser.getLastName());
             userDetails.put("email", newUser.getEmail());
+            userDetails.put("username", newUser.getUsername());         // ← NEW
             userDetails.put("schoolid", newUser.getSchoolid());
             userDetails.put("isProfileComplete", true);
+
             resp.put("user", userDetails);
 
             return ResponseEntity.ok(resp);
@@ -290,13 +286,18 @@ public class UserController {
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
-                String token = jwtUtil.generateToken(user.getEmail());
+
+                // 1) Issue a JWT embedding both email & username:
+                String token = jwtUtil.generateToken(user.getEmail(), user.getUsername());
+
+                // 2) Build the response with token + user details
                 Map<String, Object> resp = new HashMap<>();
-                resp.put("token", token);
+                resp.put("token", token);                                // ← NEW
                 resp.put("user", Map.of(
                         "id", user.getUserid(),
                         "name", user.getFirstName() + " " + user.getLastName(),
                         "email", user.getEmail(),
+                        "username", user.getUsername(),                 // ← NEW
                         "schoolid", user.getSchoolid(),
                         "isProfileComplete", user.getSchoolid() != null && !user.getSchoolid().isBlank()
                 ));
