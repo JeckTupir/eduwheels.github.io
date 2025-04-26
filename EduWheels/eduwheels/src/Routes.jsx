@@ -6,6 +6,7 @@ import CompleteProfilePage from './pages/SignUpPage/CompleteProfilePage.jsx';
 import LoginPage from './pages/LoginPage/LoginPage.jsx';
 import LoggedIn from './pages/LandingPage/LoggedInPage.jsx';
 import Profile from './pages/ProfilePage/Profile.jsx';
+import Booking from './pages/BookingPage/BookingPage.jsx';
 import AdminDashboard from './pages/AdminDashboardPage/AdminDashboardPage.jsx';
 import AdminVehicles from './pages/AdminDashboardPage/AdminVehiclesPage.jsx';
 // Import other admin pages as you create them
@@ -25,6 +26,7 @@ const RoutesComponent = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/logged-in" element={<LoggedIn />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/booking" element={<Booking />} />
                 <Route path="/oauth2/callback" element={<OAuthCallbackHandler />} />
 
                 <Route path="/admin" element={<AdminDashboard />}>

@@ -50,7 +50,7 @@ export default function LoggedInPage() {
                 console.error('Not authenticated:', err);
                 navigate("/login"); // If there's any error, navigate to login
             }
-        };S
+        };
 
         checkAuth();  // Check if the user is authenticated
     }, [navigate]);
