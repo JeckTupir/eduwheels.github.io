@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Box, Typography, Button, Grid, Avatar } from "@mui/material";
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -10,30 +10,57 @@ import busImage from '/assets/bus-image.png';
 import busLogo from '/assets/bus-logo.png';
 import eduwheelsLogo from '/assets/eduwheels-logo.png';
 import './LandingPage.css';
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import axios from "axios";
 
-const colors = {
-    darkBrown: "#5A4040",
-    lightGray: "#EEEEEE",
-    mutedPink: "#CA8787",
-    softPink: "#E1ACAC",
-    primary: "#007BFF",
-    secondary: "#6C757D",
-};
+
+// const colors = {
+//     darkBrown: "#5A4040",
+//     lightGray: "#EEEEEE",
+//     mutedPink: "#CA8787",
+//     softPink: "#E1ACAC",
+//     primary: "#007BFF",
+//     secondary: "#6C757D",
+// };
 
 export default function LoggedInPage() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem("token");  // Get token from localStorage
+
+            if (!token) {
+                // If no token is found, navigate to login page
+                navigate("/login");
+                return;
+            }
+
+            try {
+                const response = await axios.get('http://localhost:8080/users/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Ensure the token is correctly set in the Authorization header
+                    }
+                });
+
+                if (response.status !== 200) {
+                    navigate("/login"); // If the response status isn't 200, navigate to login
+                }
+            } catch (err) {
+                console.error('Not authenticated:', err);
+                navigate("/login"); // If there's any error, navigate to login
+            }
+        };
+
+        checkAuth();  // Check if the user is authenticated
+    }, [navigate]);
 
     const handleProfileClick = () => {
         window.location.href = '/profile';
     };
 
     const handleLogoutClick = () => {
-        // Implement your logout logic here.
-        // This is a placeholder.  Replace it with your actual logout code.
-        console.log("Logging out...");
-        // For example, you might clear a token from localStorage:
         localStorage.removeItem('authToken');
-        // Or redirect the user to the login page:
         window.location.href = '/';
     };
 
