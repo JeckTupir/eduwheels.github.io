@@ -18,7 +18,7 @@ import OAuthCallbackHandler from './pages/Handler/OAuthCallbackHandler.jsx';
 
 const RoutesComponent = () => {
     return (
-        <Router>
+        <Router basename="/eduwheels">
             <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/signup" element={<SignUpPage />} />
