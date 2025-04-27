@@ -6,5 +6,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000, // Set your desired port here
+    base: '/eduwheels.github.io/',
   },
 })
