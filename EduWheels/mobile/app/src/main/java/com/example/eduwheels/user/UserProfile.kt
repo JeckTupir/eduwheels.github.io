@@ -16,7 +16,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-
 class UserProfile : Activity() {
 
     private lateinit var retrofitService: RetrofitService
@@ -36,9 +35,8 @@ class UserProfile : Activity() {
         val updateButton = findViewById<Button>(R.id.btnUpdateProfile)
 
         sessionManager = SessionManager(this)
-        val currentSchoolId = sessionManager.getSchoolId()
-        Log.d("UserProfile", "Session School ID: $currentSchoolId")
-
+        val userId = sessionManager.getUserId()
+        Log.d("UserProfile", "Session User ID: $userId")
 
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
@@ -49,33 +47,33 @@ class UserProfile : Activity() {
             .build()
 
         retrofitService = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/")
+            .baseUrl("http://192.168.74.208:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
             .create(RetrofitService::class.java)
 
         // 🔍 Fetch and display user data
-        retrofitService.getUserBySchoolId(currentSchoolId ?: "")
+        retrofitService.getUserById(userId)
             .enqueue(object : Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
-                response.body()?.let { user ->
-                    firstNameField.setText(user.firstName)
-                    lastNameField.setText(user.lastName)
-                    schoolIdField.setText(user.schoolid)
-                    usernameField.setText(user.username)
+                override fun onResponse(call: Call<User>, response: Response<User>) {
+                    response.body()?.let { user ->
+                        firstNameField.setText(user.firstName)
+                        lastNameField.setText(user.lastName)
+                        schoolIdField.setText(user.schoolid)
+                        usernameField.setText(user.username)
 
-                    // ✅ Clear password fields every load
-                    oldPasswordField.setText("")
-                    newPasswordField.setText("")
-                    reenterPasswordField.setText("")
+                        // ✅ Clear password fields every load
+                        oldPasswordField.setText("")
+                        newPasswordField.setText("")
+                        reenterPasswordField.setText("")
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(this@UserProfile, "Failed to load user data", Toast.LENGTH_SHORT).show()
-            }
-        })
+                override fun onFailure(call: Call<User>, t: Throwable) {
+                    Toast.makeText(this@UserProfile, "Failed to load user data", Toast.LENGTH_SHORT).show()
+                }
+            })
 
         // 🔁 Handle profile update
         updateButton.setOnClickListener {
@@ -95,41 +93,40 @@ class UserProfile : Activity() {
             }
 
             // 🔁 Verify old password & update
-            retrofitService.getUserBySchoolId(currentSchoolId ?: "")
+            retrofitService.getUserById(userId)
                 .enqueue(object : Callback<User> {
-                override fun onResponse(call: Call<User>, response: Response<User>) {
-                    val user = response.body()
-                    if (user != null && user.password == oldPass) {
-                        val updatedUser = user.copy(
-                            firstName = firstNameField.text.toString(),
-                            lastName = lastNameField.text.toString(),
-                            username = usernameField.text.toString(),
-                            password = newPass // ✅ Only password is updated
-                        )
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
+                        val user = response.body()
+                        if (user != null && user.password == oldPass) {
+                            val updatedUser = user.copy(
+                                firstName = firstNameField.text.toString(),
+                                lastName = lastNameField.text.toString(),
+                                username = usernameField.text.toString(),
+                                password = newPass // ✅ Only password is updated
+                            )
 
-                        retrofitService.updateUser(currentSchoolId ?: "", updatedUser)
-                            .enqueue(object : Callback<User> {
-                                override fun onResponse(call: Call<User>, response: Response<User>) {
-                                    Toast.makeText(this@UserProfile, "Profile updated!", Toast.LENGTH_SHORT).show()
-                                    // Optional: clear password fields again
-                                    oldPasswordField.setText("")
-                                    newPasswordField.setText("")
-                                    reenterPasswordField.setText("")
-                                }
+                            retrofitService.updateUser(userId, updatedUser)
+                                .enqueue(object : Callback<User> {
+                                    override fun onResponse(call: Call<User>, response: Response<User>) {
+                                        Toast.makeText(this@UserProfile, "Profile updated!", Toast.LENGTH_SHORT).show()
+                                        oldPasswordField.setText("")
+                                        newPasswordField.setText("")
+                                        reenterPasswordField.setText("")
+                                    }
 
-                                override fun onFailure(call: Call<User>, t: Throwable) {
-                                    Toast.makeText(this@UserProfile, "Update failed", Toast.LENGTH_SHORT).show()
-                                }
-                            })
-                    } else {
-                        Toast.makeText(this@UserProfile, "Old password is incorrect", Toast.LENGTH_SHORT).show()
+                                    override fun onFailure(call: Call<User>, t: Throwable) {
+                                        Toast.makeText(this@UserProfile, "Update failed", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                        } else {
+                            Toast.makeText(this@UserProfile, "Old password is incorrect", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<User>, t: Throwable) {
-                    Toast.makeText(this@UserProfile, "Failed to fetch user", Toast.LENGTH_SHORT).show()
-                }
-            })
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Toast.makeText(this@UserProfile, "Failed to fetch user", Toast.LENGTH_SHORT).show()
+                    }
+                })
         }
     }
 }

@@ -1,12 +1,15 @@
 package com.example.eduwheels.models
 
-class Vehicle {
+import com.google.gson.annotations.SerializedName
 
+class Vehicle {
     data class Vehicle(
-        val type: String,
-        val name: String,
-        val capacity: String,
-        val plateNumber: String,
-        val status: String
+        @SerializedName("vehicleId") val vehicleId: Long,
+        @SerializedName("plateNumber") val plateNumber: String,
+        @SerializedName("type") val type: String,
+        @SerializedName("capacity") val capacity: Int,
+        @SerializedName("status") val status: String,
+        @SerializedName("photoPath") val photoPath: String?,  // Nullable because some vehicles might not have photos
+        @SerializedName("vehicleName") val vehicleName: String
     )
 }

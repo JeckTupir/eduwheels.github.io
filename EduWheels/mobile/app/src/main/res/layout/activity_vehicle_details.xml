@@ -11,117 +11,132 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="#734E4E"
-            android:padding="8dp"
-            android:baselineAligned="false">
-
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/eduthree" />
-
-            <ImageView
-                android:layout_width="53dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="270dp"
-                android:background="@drawable/men"
-                android:contentDescription="Menu Icon" />
-        </LinearLayout>
-
-        <!-- Back button -->
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="start" />
-
         <!-- Bus Image -->
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
             android:scaleType="centerInside"
             android:src="@drawable/bus" />
 
-        <!-- Rounded Details Container -->
+        <!-- Rounded Container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_bg"
             android:orientation="vertical"
-            android:background="#FCDADA"
             android:padding="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="#FCDADA"
-            android:elevation="4dp"
-            android:clipToOutline="true">
+            android:elevation="6dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unit Details"
+                android:textSize="20sp"
                 android:textStyle="bold"
-                android:textSize="18sp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="16dp"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp" />
 
-            <!-- Labels + Fields -->
+            <!-- Fields inside rounded container -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Brand"
-                android:id="@+id/brandInput"
+                android:textColor="#734E4E"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/brandInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext_bg"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Unit Name"
-                android:id="@+id/unitNameInput"
+                android:textColor="#734E4E"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/unitNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext_bg"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Capacity"
-                android:id="@+id/capacityInput"
+                android:textColor="#734E4E"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/capacityInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext_bg"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Category"
-                android:id="@+id/categoryInput"
+                android:textColor="#734E4E"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/categoryInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext_bg"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Status"
-                android:id="@+id/statusInput"
+                android:textColor="#734E4E"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/statusInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_edittext_bg"
+                android:padding="12dp"
+                android:textColor="#000000" />
+
+            <!-- Book Now Button (inside the rounded container) -->
+            <Button
+                android:id="@+id/bookNowBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Book Now"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:elevation="10dp"
+                android:layout_marginTop="24dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:layout_gravity="center" />
 
         </LinearLayout>
 
-        <!-- Book Button -->
-        <Button
-            android:id="@+id/bookNowBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Book Now"
-            android:textColor="#FFFFFF"
-            android:background="#D4A5A5"
-            android:padding="12dp"
-            android:elevation="10dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center"
-            android:backgroundTint="#D4A5A5" />
-
     </LinearLayout>
+
 </ScrollView>

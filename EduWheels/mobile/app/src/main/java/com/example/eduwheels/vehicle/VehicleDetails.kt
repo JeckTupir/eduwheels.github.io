@@ -21,21 +21,23 @@ class VehicleDetails : Activity() {
         val statusInput = findViewById<TextView>(R.id.statusInput)
         val bookBtn = findViewById<Button>(R.id.bookNowBtn)
 
-        // 🚧 Hardcoded placeholders
-        brandInput.text = "Volvo"
-        unitNameInput.text = "Volvo 9700 Grand L"
-        capacityInput.text = "60"
-        categoryInput.text = "Bus"
-        statusInput.text = "Available"
+        // 🚀 Get data from Intent
+        val vehicleType = intent.getStringExtra("vehicleType") ?: ""
+        val vehicleName = intent.getStringExtra("vehicleName") ?: ""
+        val capacity = intent.getIntExtra("capacity", 0)
+        val plateNumber = intent.getStringExtra("plateNumber") ?: ""
+        val status = intent.getStringExtra("status") ?: ""
+
+        brandInput.text = plateNumber
+        unitNameInput.text = vehicleName
+        capacityInput.text = capacity.toString()
+        categoryInput.text = vehicleType
+        statusInput.text = status
 
         bookBtn.setOnClickListener {
             Toast.makeText(this, "Booking request sent!", Toast.LENGTH_SHORT).show()
-
-            // Navigate to BookingForm activity
-            val intent = Intent(this, BookingForm::class.java)
-            startActivity(intent)
-            finish() // optional if you want to close VehicleDetails screen after booking
+            startActivity(Intent(this, BookingForm::class.java))
+            finish()
         }
-
     }
 }

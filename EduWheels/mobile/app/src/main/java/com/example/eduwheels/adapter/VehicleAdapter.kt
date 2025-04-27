@@ -7,9 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.eduwheels.R
 import com.example.eduwheels.models.Vehicle
-import com.example.eduwheels.user.LogIn
 import com.example.eduwheels.vehicle.VehicleDetails
 
 class VehicleAdapter(private val vehicles: List<Vehicle.Vehicle>) :
@@ -29,31 +29,45 @@ class VehicleAdapter(private val vehicles: List<Vehicle.Vehicle>) :
 
     class VehicleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun bind(vehicle: Vehicle.Vehicle) {
-            itemView.findViewById<TextView>(R.id.vehicleType).text = vehicle.type
-            itemView.findViewById<TextView>(R.id.vehicleName).text = vehicle.name
-            itemView.findViewById<TextView>(R.id.capacity).text = "Capacity: ${vehicle.capacity}"
-            itemView.findViewById<TextView>(R.id.plateNumber).text = "Plate Number: ${vehicle.plateNumber}"
-            itemView.findViewById<TextView>(R.id.status).text = "Status: ${vehicle.status}"
-
+            val vehicleType = itemView.findViewById<TextView>(R.id.vehicleType)
+            val vehicleName = itemView.findViewById<TextView>(R.id.vehicleName)
+            val capacity = itemView.findViewById<TextView>(R.id.capacity)
+            val plateNumber = itemView.findViewById<TextView>(R.id.plateNumber)
+            val status = itemView.findViewById<TextView>(R.id.status)
+            val busImage = itemView.findViewById<ImageView>(R.id.busImage) // Correct ID
             val bookButton = itemView.findViewById<Button>(R.id.bookbtn)
-            bookButton.setOnClickListener {
-                Toast.makeText(
-                    itemView.context,
-                    "Booking ${vehicle.name}...",
-                    Toast.LENGTH_SHORT
-                ).show()
 
+            vehicleType.text = vehicle.type
+            vehicleName.text = vehicle.vehicleName
+            capacity.text = "Capacity: ${vehicle.capacity}"
+            plateNumber.text = "Plate Number: ${vehicle.plateNumber}"
+            status.text = "Status: ${vehicle.status}"
+
+            if (!vehicle.photoPath.isNullOrEmpty()) {
+                val fullImageUrl = "http://192.168.74.208:8080/api/vehicles/uploads/${vehicle.photoPath}"
+                Glide.with(itemView.context)
+                    .load(fullImageUrl)
+                    .placeholder(R.drawable.bus)
+                    .into(busImage)
+            } else {
+                busImage.setImageResource(R.drawable.bus)
+            }
+
+            bookButton.setOnClickListener {
                 val context = itemView.context
-                val intent = Intent(context, VehicleDetails::class.java)
+                val intent = Intent(context, VehicleDetails::class.java).apply {
+                    putExtra("vehicleType", vehicle.type)
+                    putExtra("vehicleName", vehicle.vehicleName)
+                    putExtra("capacity", vehicle.capacity)
+                    putExtra("plateNumber", vehicle.plateNumber)
+                    putExtra("status", vehicle.status)
+                }
                 context.startActivity(intent)
 
                 if (context is Activity) {
                     context.finish()
                 }
             }
-
-
         }
     }
-
 }

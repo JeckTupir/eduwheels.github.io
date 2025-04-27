@@ -1,6 +1,7 @@
 package com.example.eduwheels.api
 
 import com.example.eduwheels.models.User
+import com.example.eduwheels.models.Vehicle
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -15,12 +16,15 @@ interface RetrofitService {
     @GET("/users")
     fun getAllUsers(): Call<List<User>>
 
-    @GET("/users/{schoolid}")
-    fun getUserBySchoolId(@Path("schoolid") schoolId: String): Call<User>
+    @GET("/users/{id}")
+    fun getUserById(@Path("id") id: Long): Call<User>
 
-    @PUT("/users/{schoolid}")
+    @PUT("/users/{id}")
     fun updateUser(
-        @Path("schoolid") schoolId: String,
+        @Path("id") id: Long,
         @Body updatedUser: User
     ): Call<User>
+
+    @GET("/api/vehicles") // This matches your VehicleController
+    fun getAllVehicles(): Call<List<Vehicle.Vehicle>>
 }

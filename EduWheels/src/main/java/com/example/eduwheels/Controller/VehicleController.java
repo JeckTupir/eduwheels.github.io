@@ -75,13 +75,14 @@ public class VehicleController {
             @RequestParam String type,
             @RequestParam int capacity,
             @RequestParam String status,
+            @RequestParam String vehicleName,
             @RequestParam("photo") MultipartFile photo) {
         try {
             String photoPath = null;
             if (photo != null && !photo.isEmpty()) {
                 photoPath = vehicleService.saveImageToFilesystem(photo);
             }
-            VehicleEntity vehicle = new VehicleEntity(plateNumber, type, capacity, status, photoPath);
+            VehicleEntity vehicle = new VehicleEntity(plateNumber, type, capacity, status, photoPath, vehicleName);
             VehicleEntity created = vehicleService.createVehicle(vehicle);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (IOException ex) {
@@ -103,6 +104,7 @@ public class VehicleController {
             @RequestParam String type,
             @RequestParam int capacity,
             @RequestParam String status,
+            @RequestParam String vehicleName,
             @RequestParam(value = "photo", required = false) MultipartFile photo) {
         try {
             VehicleEntity existing = vehicleService.getVehicleById(id);
@@ -113,6 +115,7 @@ public class VehicleController {
             existing.setType(type);
             existing.setCapacity(capacity);
             existing.setStatus(status);
+            existing.setVehicleName(vehicleName);
             if (photo != null && !photo.isEmpty()) {
                 String photoPath = vehicleService.saveImageToFilesystem(photo);
                 existing.setPhotoPath(photoPath);

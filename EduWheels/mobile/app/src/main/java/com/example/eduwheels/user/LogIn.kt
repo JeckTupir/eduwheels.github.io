@@ -40,10 +40,6 @@ class LogIn : Activity() {
     }
 
     private fun loginUser(schoolId: String, password: String) {
-        // Save session before network call
-        val sessionManager = SessionManager(this@LogIn)
-        sessionManager.saveSchoolId(schoolId)
-
         val loginJson = JSONObject().apply {
             put("schoolid", schoolId)
             put("password", password)
@@ -51,7 +47,7 @@ class LogIn : Activity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val url = URL("http://10.0.2.2:8080/users/login")
+                val url = URL("http://192.168.74.208:8080/users/login")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json")
@@ -66,9 +62,30 @@ class LogIn : Activity() {
 
                 runOnUiThread {
                     if (responseCode == HttpURLConnection.HTTP_OK) {
-                        Toast.makeText(this@LogIn, "Login successful!", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@LogIn, DashBoard::class.java))
-                        finish()
+                        try {
+                            val responseJson = JSONObject(responseBody)
+
+                            // NEW: get "token" and "user"
+                            val token = responseJson.getString("token")
+                            val userJson = responseJson.getJSONObject("user")
+
+                            val sessionManager = SessionManager(this@LogIn)
+
+                            sessionManager.saveUserSession(
+                                userId = userJson.getLong("id"),
+                                schoolId = userJson.getString("schoolid"),
+                                email = userJson.getString("email"),
+                                name = userJson.getString("name"),
+                                token = token // Save the JWT token
+                            )
+
+                            Toast.makeText(this@LogIn, "Login successful!", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@LogIn, DashBoard::class.java))
+                            finish()
+
+                        } catch (e: Exception) {
+                            Toast.makeText(this@LogIn, "Parsing error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(this@LogIn, "Login failed: $responseBody", Toast.LENGTH_LONG).show()
                     }
@@ -83,5 +100,4 @@ class LogIn : Activity() {
             }
         }
     }
-
 }

@@ -1,34 +1,28 @@
-package com.example.eduwheels.Config; // Adjust package name as needed
+package com.example.eduwheels.Config;
 
 import com.example.eduwheels.Entity.UserEntity;
 import com.example.eduwheels.Service.GoogleOAuth2UserService;
 import com.example.eduwheels.Utils.JwtAuthenticationFilter;
 import com.example.eduwheels.Utils.JwtUtil;
-import jakarta.servlet.http.HttpSession; // Import HttpSession
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod; // Import HttpMethod
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Import BCrypt
-import org.springframework.security.crypto.password.PasswordEncoder; // Import PasswordEncoder
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.eduwheels.Handler.CustomOAuth2SuccessHandler;
 
 import java.util.Arrays;
-import java.util.HashMap; // Import HashMap
 import java.util.List;
-import java.util.Map; // Import Map
 
 @Configuration
 @EnableWebSecurity
@@ -46,15 +40,12 @@ public class SecurityConfig {
     @Autowired
     private CustomOAuth2SuccessHandler customOAuth2SuccessHandler;
 
-    // Key to store temporary user details in the HTTP session
     public static final String PENDING_OAUTH2_USER_ATTRIBUTE_KEY = "pendingOAuth2UserDetails";
 
-    // --- Define PasswordEncoder Bean ---
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
     }
-    // ---
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -62,10 +53,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // no sessions for JWT
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/users/login", "/users/signup", "/oauth2/**", "/complete-profile").permitAll()
+                        .requestMatchers(
+                                "/users/login",
+                                "/users/signup",
+                                "/oauth2/**",
+                                "/complete-profile",
+                                "/api/vehicles/**"      // ✅ Allow Android to call /api/vehicles
+                        ).permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -86,7 +83,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://192.168.74.208:8080")); // ✅ Allow Android too
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
