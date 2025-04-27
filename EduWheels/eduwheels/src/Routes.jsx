@@ -12,7 +12,7 @@ import Booking from './pages/BookingPage/BookingPage.jsx';
 import AdminDashboard from './pages/AdminDashboardPage/AdminDashboardPage.jsx';
 import AdminVehicles from './pages/AdminDashboardPage/AdminVehiclesPage.jsx';
 // Import other admin pages as you create them
-import AdminBookings from './pages/AdminDashboardPage/AdminBookingsPage.jsx'; // Assuming you have this now
+// import AdminBookings from './pages/AdminDashboardPage/AdminBookingsPage.jsx'; // Assuming you have this now
 // import AdminReviews from './pages/AdminDashboardPage/AdminReviewsPage.jsx';
 // import AdminReports from './pages/AdminDashboardPage/AdminReportsPage.jsx';
 import AdminUsers from './pages/AdminDashboardPage/AdminUsersPage.jsx';
