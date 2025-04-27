@@ -8,9 +8,10 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 WORKDIR /app
 
 # Copy necessary files from the EduWheels folder
-COPY pom.xml mvnw ./
-COPY .mvn .mvn
-COPY src/ src/
+COPY EduWheels/pom.xml EduWheels/mvnw ./
+COPY EduWheels/.mvn .mvn
+COPY EduWheels/src src/
+
 
 # Make mvnw executable
 RUN chmod +x mvnw
@@ -30,7 +31,7 @@ WORKDIR /app
 # Copy the jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port
+# Expose the portdocker build -t eduwheels .
 EXPOSE 8080
 
 # Run the app
