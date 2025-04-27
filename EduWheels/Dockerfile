@@ -7,10 +7,10 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 WORKDIR /app
 
-# Copy all necessary files
+# Copy necessary files from the EduWheels folder
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
-COPY src src
+COPY src/ src/
 
 # Make mvnw executable
 RUN chmod +x mvnw
